@@ -20,11 +20,16 @@ sourceCompatibility = 1.8
 
 repositories {
 	mavenCentral()
+	mavenLocal()
+	maven{url "file://D:/repo"}
 }
 
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-web')
+	compile(
+			'org.springframework.boot:spring-boot-starter-web',
+			'com.weasel.secret.common:secret-common'
+	)
 	runtime('mysql:mysql-connector-java')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
