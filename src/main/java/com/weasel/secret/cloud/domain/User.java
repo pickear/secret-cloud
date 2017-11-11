@@ -10,11 +10,12 @@ import java.util.List;
 @Table(name = "user")
 public class User{
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     /**
      * 用户名
      */
-    @Column(name = "username",nullable = false)
+    @Column(name = "username",nullable = false,unique = true)
     private String username;
     /**
      * 密码

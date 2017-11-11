@@ -10,6 +10,7 @@ import java.util.List;
 @Table(name = "subject")
 public class Subject {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     /**
      * 标题

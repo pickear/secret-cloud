@@ -1,8 +1,6 @@
 package com.weasel.secret.cloud.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by Dylan on 2017/11/11.
@@ -11,8 +9,11 @@ import javax.persistence.Table;
 @Table(name = "secret")
 public class Secret{
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "value")
     private String value;
 
     public long getId() {
