@@ -1,5 +1,6 @@
 package com.weasel.secret.cloud.application;
 
+
 import com.weasel.secret.cloud.domain.User;
 
 /**

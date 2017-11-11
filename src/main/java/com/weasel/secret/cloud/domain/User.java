@@ -1,20 +1,37 @@
 package com.weasel.secret.cloud.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.io.Serializable;
+import javax.persistence.*;
+import java.util.List;
 
-/**
- * Created by dell on 2017/11/10.
+/**用户
+ * Created by Dylan on 2017/11/11.
  */
 @Entity
-public class User implements Serializable{
-
+@Table(name = "user")
+public class User{
     @Id
     private long id;
+    /**
+     * 用户名
+     */
+    @Column(name = "username",nullable = false)
     private String username;
+    /**
+     * 密码
+     */
+    @Column(name = "password",nullable = false)
     private String password;
+    /**
+     * 邮箱
+     */
+    @Column(name = "email",nullable = true)
     private String email;
+    /**
+     * 密码主体，比如招行，淘宝
+     */
+    @OneToMany(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "user_id")
+    private List<Subject> subjects;
 
     public long getId() {
         return id;
@@ -46,5 +63,13 @@ public class User implements Serializable{
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(List<Subject> subjects) {
+        this.subjects = subjects;
     }
 }

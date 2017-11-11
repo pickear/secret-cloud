@@ -1,6 +1,6 @@
 jasypt:
   encryptor:
-    password: 666
+    password: 555
 
 spring:
   datasource:
