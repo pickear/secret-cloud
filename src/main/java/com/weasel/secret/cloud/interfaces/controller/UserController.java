@@ -1,7 +1,7 @@
 package com.weasel.secret.cloud.interfaces.controller;
 
 import com.weasel.secret.cloud.application.UserService;
-import com.weasel.secret.cloud.domain.User;
+import com.weasel.secret.common.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

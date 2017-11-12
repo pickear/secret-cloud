@@ -1,6 +1,6 @@
 package com.weasel.secret.cloud.infrastructure.persist;
 
-import com.weasel.secret.cloud.domain.User;
+import com.weasel.secret.common.domain.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
