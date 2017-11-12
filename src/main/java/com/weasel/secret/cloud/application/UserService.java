@@ -8,5 +8,17 @@ import com.weasel.secret.common.domain.User;
  */
 public interface UserService {
 
+    /**
+     * 通过用户id获取用户信息
+     * @param id
+     * @return
+     */
     User get(long id);
+
+    /**
+     * 保存用户信息
+     * @param user
+     * @return
+     */
+    User save(User user);
 }
