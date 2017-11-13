@@ -39,7 +39,8 @@ dependencies {
 			'com.weasel.secret.common:secret-common:1.0-SNAPSHOT',
 			'com.github.ulisesbocchio:jasypt-spring-boot-starter:1.11',
 			'io.springfox:springfox-swagger2:2.7.0',
-			'io.springfox:springfox-swagger-ui:2.7.0'
+			'io.springfox:springfox-swagger-ui:2.7.0',
+			'org.apache.shiro:shiro-spring:1.4.0'
 			/*'com.querydsl:querydsl-jpa:4.1.3'*/
 	)
 	runtime(
