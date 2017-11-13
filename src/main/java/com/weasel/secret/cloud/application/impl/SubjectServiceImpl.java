@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by Dylan on 2017/11/12.
  */
@@ -32,5 +34,10 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public Subject save(Subject subject) {
         return repository.save(subject);
+    }
+
+    @Override
+    public List<Subject> findByUserId(long userId) {
+        return repository.findByUserId(userId);
     }
 }
