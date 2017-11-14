@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2017-11-13 15:23:04
+Date: 2017-11-14 17:49:56
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -25,13 +25,16 @@ CREATE TABLE `secret` (
   `name` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `subject_id_fk` (`subject_id`),
-  CONSTRAINT `subject_id_fk` FOREIGN KEY (`subject_id`) REFERENCES `subject` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `subject_id_fk` (`subject_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of secret
 -- ----------------------------
+INSERT INTO `secret` VALUES ('8', '0', '登录密码', 'cccc');
+INSERT INTO `secret` VALUES ('9', '0', '取款密码', 'dddddd');
+INSERT INTO `secret` VALUES ('10', '11', '登录密码', 'cccc');
+INSERT INTO `secret` VALUES ('11', '11', '取款密码', 'dddddd');
 
 -- ----------------------------
 -- Table structure for subject
@@ -43,13 +46,14 @@ CREATE TABLE `subject` (
   `title` varchar(255) NOT NULL,
   `url` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id_fk` (`user_id`),
-  CONSTRAINT `user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `user_id_fk` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of subject
 -- ----------------------------
+INSERT INTO `subject` VALUES ('10', '0', '平安银行', 'www.pinan.com');
+INSERT INTO `subject` VALUES ('11', '9', '平安银行', 'www.pinan.com');
 
 -- ----------------------------
 -- Table structure for user
@@ -62,8 +66,10 @@ CREATE TABLE `user` (
   `email` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
+INSERT INTO `user` VALUES ('7', 'ccc', 'abc', '2234234@qq.com');
+INSERT INTO `user` VALUES ('9', 'ccc', 'abc', '2234234@qq.com');
