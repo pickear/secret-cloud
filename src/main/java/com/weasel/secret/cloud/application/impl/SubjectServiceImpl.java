@@ -1,5 +1,6 @@
 package com.weasel.secret.cloud.application.impl;
 
+import com.google.common.collect.Lists;
 import com.weasel.secret.cloud.application.SubjectService;
 import com.weasel.secret.cloud.infrastructure.persist.SubjectRepository;
 import com.weasel.secret.common.domain.Subject;
@@ -34,6 +35,11 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public Subject save(Subject subject) {
         return repository.save(subject);
+    }
+
+    @Override
+    public List<Subject> save(List<Subject> subjects) {
+        return Lists.newArrayList(repository.save(subjects));
     }
 
     @Override

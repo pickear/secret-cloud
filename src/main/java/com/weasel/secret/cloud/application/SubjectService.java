@@ -25,6 +25,13 @@ public interface SubjectService {
 
     /**
      *
+     * @param subjects
+     * @return
+     */
+    List<Subject> save(List<Subject> subjects);
+
+    /**
+     *
      * @param userId
      * @return
      */
