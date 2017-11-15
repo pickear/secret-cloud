@@ -38,6 +38,7 @@ public class ShiroConfiguration {
 		filterChainDefinitionMap.put("/user/login", "anon");
 		filterChainDefinitionMap.put("/user/register", "anon");
 		filterChainDefinitionMap.put("/user/hadLogin", "anon");
+		filterChainDefinitionMap.put("/swagger-ui.html", "anon");
 		filterChainDefinitionMap.put("/**", "authc");
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
