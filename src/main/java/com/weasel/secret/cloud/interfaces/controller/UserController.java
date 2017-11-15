@@ -64,6 +64,7 @@ public class UserController {
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public @ResponseBody CommonResponse login(@RequestBody User user, HttpServletRequest request){
 
+        logger.info("用户[{}]登录！",user.getUsername());
         try {
             Subject currentUser = SecurityUtils.getSubject();
             if (currentUser.isAuthenticated()) {
@@ -79,6 +80,7 @@ public class UserController {
             logger.warn("用户名[{}]不存在。",user.getUsername());
             return CommonResponse.buildFail("该用户不存在!");
         }
+        logger.info("用户[{}]登录成功!",user.getUsername());
         return CommonResponse.buildSuccess("登录成功");
     }
 
