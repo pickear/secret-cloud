@@ -45,7 +45,7 @@ public class ShiroRealm extends AuthorizingRealm {
 			LOG.trace("开始认证 "+ username);
 		}
 		try {
-			if(StringUtils.hasLength(username)){
+			if(!StringUtils.hasLength(username)){
 				throw new AccountException("username is blank,can not handle this login");
 			}
 			User user = userRepository.findByUsername(username);

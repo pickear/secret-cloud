@@ -16,10 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -50,12 +47,14 @@ public class UserController {
     @ApiOperation(value = "用户注册",notes = "用户注册一个帐号")
     @ApiImplicitParam(name = "user",value = "用户对象",defaultValue = "NULL",required = true,dataTypeClass = User.class)
     @RequestMapping(value = "/register",method = RequestMethod.POST)
-    public @ResponseBody User register(User user){
+    public @ResponseBody User register(@RequestBody  User user){
 
+        logger.info("用户[{}]注册！",user.getUsername());
         User existUser = service.findByUsername(user.getUsername());
         if (null != existUser){
             return user;
         }
+        user.encodePassword();
         user = service.save(user);
         return user;
     }
@@ -63,7 +62,7 @@ public class UserController {
     @ApiOperation(value = "登录",notes = "用户权限登录")
     @ApiImplicitParam(name = "user",value = "用户对象",defaultValue = "NULL",required = true,dataTypeClass = User.class)
     @RequestMapping(value = "/login",method = RequestMethod.POST)
-    public @ResponseBody CommonResponse login(User user, HttpServletRequest request){
+    public @ResponseBody CommonResponse login(@RequestBody User user, HttpServletRequest request){
 
         try {
             Subject currentUser = SecurityUtils.getSubject();

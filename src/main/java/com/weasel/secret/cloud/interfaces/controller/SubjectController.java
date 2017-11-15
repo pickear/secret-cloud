@@ -11,10 +11,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -41,7 +38,7 @@ public class SubjectController {
     @ApiOperation(value = "添加/编辑用户密码",notes = "当不传id时是添加，传id时是更新")
     @ApiImplicitParam(name = "subject",value = "Subject对象",defaultValue = "NULL",required = true,dataTypeClass = Subject.class)
     @RequestMapping(value = "/save",method = RequestMethod.POST)
-    public @ResponseBody Subject save(Subject subject){
+    public @ResponseBody Subject save(@RequestBody Subject subject){
         subject = service.save(subject);
         return subject;
     }
