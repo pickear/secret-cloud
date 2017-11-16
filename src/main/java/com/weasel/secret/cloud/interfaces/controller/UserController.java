@@ -15,6 +15,7 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +50,9 @@ public class UserController {
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     public @ResponseBody User register(@RequestBody  User user){
 
+        Assert.notNull(user,"user can not be null");
+        Assert.hasLength(user.getUsername(),"username can not be empty");
+        Assert.hasLength(user.getPassword(),"password can not be empty");
         logger.info("用户[{}]注册！",user.getUsername());
         User existUser = service.findByUsername(user.getUsername());
         if (null != existUser){
@@ -64,6 +68,9 @@ public class UserController {
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public @ResponseBody CommonResponse login(@RequestBody User user, HttpServletRequest request){
 
+        Assert.notNull(user,"user can not be null");
+        Assert.hasLength(user.getUsername(),"username can not be empty");
+        Assert.hasLength(user.getPassword(),"password can not be empty");
         logger.info("用户[{}]登录！",user.getUsername());
         try {
             Subject currentUser = SecurityUtils.getSubject();
