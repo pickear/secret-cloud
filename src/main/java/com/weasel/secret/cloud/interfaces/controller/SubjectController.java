@@ -38,7 +38,8 @@ public class SubjectController {
 
     @ApiOperation(
             value = "添加/编辑用户密码",
-            notes = "注意：<h5>1.</h5>需要在登录状态下调用.<br>" +
+            notes = "注意：<br>" +
+                    "<h5>1.</h5>需要在登录状态下调用.<br>" +
                          "<h5>2.</h5>当不传id时是表示添加，传id时表示是更新.<br>" +
                          "<h5>3.</h5>第一次添加时，返回值为Subject对象，该对象带有cloud端生成的id，android端需要将此id保存，下次编辑时使用.<br>" +
                          "<h5>4.</h5>Subject对象下所有Secret的value值是用户的各种密码，应该使用用户设定的密钥加密后再传输到cloud端，cloud的数据库不保存任何跟密码有关的明文，以防被暴库时密码泄漏.<br>",
