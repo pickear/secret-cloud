@@ -33,7 +33,10 @@ public class UserController {
     @Autowired
     private UserService service;
 
-    @ApiOperation(value = "获取用户信息",notes = "通过接口获取用户的信息")
+    @ApiOperation(
+            value = "获取用户信息",
+            notes = "<h5>1.</h5>需要在登录状态下调用.<br>"
+    )
     @RequestMapping(path = "/query",method = RequestMethod.GET)
     public @ResponseBody User query(){
         User user = ShiroHelper.getCurrentUser();
@@ -45,7 +48,18 @@ public class UserController {
      * @param user
      * @return
      */
-    @ApiOperation(value = "用户注册",notes = "用户注册一个帐号",response = User.class,httpMethod = "POST",consumes = "application/json",produces = "application/json",protocols = "http/https")
+    @ApiOperation(
+            value = "用户注册",
+            notes = "<h5>1.</h5>用户名需要唯一.<br>" +
+                    "<h5>2.</h5>注册完成后返回User对象，如果存在id值说明成功，不存在说明失败.<br>" +
+                    "<h5>3.</h5>注册成功后app端理应保存该id.<br>" +
+                    "<h5>4.</h5>传递时用用户密码应该是明文，安全性依靠https来处理.<br>",
+            response = User.class,
+            httpMethod = "POST",
+            consumes = "application/json",
+            produces = "application/json",
+            protocols = "http/https"
+    )
     @ApiImplicitParam(name = "user",value = "用户对象",defaultValue = "NULL",required = true,dataTypeClass = User.class)
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     public @ResponseBody User register(@RequestBody  User user){
@@ -56,6 +70,7 @@ public class UserController {
         logger.info("用户[{}]注册！",user.getUsername());
         User existUser = service.findByUsername(user.getUsername());
         if (null != existUser){
+            logger.warn("用户[{}]已存在!",user.getUsername());
             return user;
         }
         user.encodePassword();
@@ -63,7 +78,16 @@ public class UserController {
         return user;
     }
 
-    @ApiOperation(value = "登录",notes = "用户权限登录",response = CommonResponse.class,httpMethod = "POST",consumes = "application/json",produces = "application/json",protocols = "http/https")
+    @ApiOperation(
+            value = "登录",
+            notes = "h5>1.</h5>传递时用用户密码应该是明文，安全性依靠https来处理.<br>" +
+                    "h5>2.</h5>返回值为CommonResponse对象，code为0000表示成功，0001表示失败，message存放成功或失败的信息.<br>",
+            response = CommonResponse.class,
+            httpMethod = "POST",
+            consumes = "application/json",
+            produces = "application/json",
+            protocols = "http/https"
+    )
     @ApiImplicitParam(name = "user",value = "用户对象",defaultValue = "NULL",required = true,dataTypeClass = User.class)
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public @ResponseBody CommonResponse login(@RequestBody User user, HttpServletRequest request){
@@ -91,7 +115,15 @@ public class UserController {
         return CommonResponse.buildSuccess("登录成功");
     }
 
-    @ApiOperation(value = "是否已登录",notes = "判断用户是否已登录",response = CommonResponse.class,httpMethod = "GET",consumes = "application/json",produces = "application/json",protocols = "http/https")
+    @ApiOperation(
+            value = "是否已登录",
+            notes = "返回值为CommonResponse对象，code为0000表示已登录，0001表示没登录，message存放登录与否信息.<br>",
+            response = CommonResponse.class,
+            httpMethod = "GET",
+            consumes = "application/json",
+            produces = "application/json",
+            protocols = "http/https"
+    )
     @RequestMapping(value = "/hadLogin",method = RequestMethod.GET)
     public @ResponseBody CommonResponse hadLogin(){
 
