@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping("/user")
-@Api(description = "用户操作相关文档",protocols = "http")
+@Api(description = "用户操作相关文档",protocols = "http/https",consumes = "application/json",produces = "application/json")
 public class UserController {
 
     private final static Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -45,7 +45,7 @@ public class UserController {
      * @param user
      * @return
      */
-    @ApiOperation(value = "用户注册",notes = "用户注册一个帐号")
+    @ApiOperation(value = "用户注册",notes = "用户注册一个帐号",response = User.class,httpMethod = "POST",consumes = "application/json",produces = "application/json",protocols = "http/https")
     @ApiImplicitParam(name = "user",value = "用户对象",defaultValue = "NULL",required = true,dataTypeClass = User.class)
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     public @ResponseBody User register(@RequestBody  User user){
@@ -63,7 +63,7 @@ public class UserController {
         return user;
     }
 
-    @ApiOperation(value = "登录",notes = "用户权限登录")
+    @ApiOperation(value = "登录",notes = "用户权限登录",response = CommonResponse.class,httpMethod = "POST",consumes = "application/json",produces = "application/json",protocols = "http/https")
     @ApiImplicitParam(name = "user",value = "用户对象",defaultValue = "NULL",required = true,dataTypeClass = User.class)
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public @ResponseBody CommonResponse login(@RequestBody User user, HttpServletRequest request){
@@ -91,7 +91,7 @@ public class UserController {
         return CommonResponse.buildSuccess("登录成功");
     }
 
-    @ApiOperation(value = "是否已登录",notes = "判断用户是否已登录")
+    @ApiOperation(value = "是否已登录",notes = "判断用户是否已登录",response = CommonResponse.class,httpMethod = "GET",consumes = "application/json",produces = "application/json",protocols = "http/https")
     @RequestMapping(value = "/hadLogin",method = RequestMethod.GET)
     public @ResponseBody CommonResponse hadLogin(){
 

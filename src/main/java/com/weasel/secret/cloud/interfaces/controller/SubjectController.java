@@ -20,7 +20,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/subject")
-@Api(description = "密码操作相关文档",protocols = "http")
+@Api(description = "密码操作相关文档",protocols = "http/https",consumes = "application/json",produces = "application/json")
 public class SubjectController {
 
     @Autowired
@@ -35,7 +35,7 @@ public class SubjectController {
         return subjects;
     }
 
-    @ApiOperation(value = "添加/编辑用户密码",notes = "当不传id时是添加，传id时是更新")
+    @ApiOperation(value = "添加/编辑用户密码",notes = "当不传id时是添加，传id时是更新",response = Subject.class,httpMethod = "POST",consumes = "application/json",produces = "application/json",protocols = "http/https")
     @ApiImplicitParam(name = "subject",value = "Subject对象",defaultValue = "NULL",required = true,dataTypeClass = Subject.class)
     @RequestMapping(value = "/save",method = RequestMethod.POST)
     public @ResponseBody Subject save(@RequestBody Subject subject){
@@ -43,7 +43,7 @@ public class SubjectController {
         return subject;
     }
 
-    @ApiOperation(value = "删除用户密码",notes = "用户权限登录")
+    @ApiOperation(value = "删除用户密码",notes = "用户权限登录",response = CommonResponse.class,httpMethod = "DELETE",consumes = "application/json",produces = "application/json",protocols = "http/https")
     @ApiImplicitParam(name = "id",value = "Subject ID",defaultValue = "NULL",example = "1",required = true,dataTypeClass = Long.class)
     @RequestMapping(value = "/delete",method = RequestMethod.DELETE)
     public @ResponseBody CommonResponse delete(Long id){
