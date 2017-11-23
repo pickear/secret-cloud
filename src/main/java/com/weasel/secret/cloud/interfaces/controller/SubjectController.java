@@ -25,7 +25,7 @@ public class SubjectController {
     private SubjectService service;
 
     @ApiOperation(
-            value = "获取用户的密码列表",
+            value = "获取用户的密码记录列表",
             notes = "<h5>1.</h5>需要在登录状态下调用.<br>"
     )
     @RequestMapping(value = "/list",method = RequestMethod.GET)
@@ -38,7 +38,7 @@ public class SubjectController {
     }
 
     @ApiOperation(
-            value = "添加/编辑用户密码",
+            value = "添加/编辑用户密码记录",
             notes = "注意：<br>" +
                     "<h5>1.</h5>需要在登录状态下调用.<br>" +
                          "<h5>2.</h5>当不传id时是表示添加，传id时表示是更新.<br>" +
@@ -62,10 +62,11 @@ public class SubjectController {
 
 
     @ApiOperation(
-            value = "批量添加/编辑用户密码",
+            value = "批量添加/编辑用户密码记录",
             notes = "注意：<br>" +
                     "<h5>1.</h5>需要在登录状态下调用.<br>" +
                     "<h5>2.</h5>当不传id时是表示添加，传id时表示是更新.<br>" +
+                    "<h5>2.</h5>当app端传给cloud端的用户密码记录列表为空时，cloud端什么也不做.<br>"+
                     "<h5>3.</h5>第一次添加时，返回值为Subject对象，该对象带有cloud端生成的id，android端需要将此id保存，下次编辑时使用.<br>" +
                     "<h5>4.</h5>Subject对象下所有Secret的value值是用户的各种密码，应该使用用户设定的密钥加密后再传输到cloud端，cloud的数据库不保存任何跟密码有关的明文，以防被暴库时密码泄漏.<br>",
             response = Subject.class,
@@ -79,13 +80,42 @@ public class SubjectController {
     public @ResponseBody List<Subject> save(@RequestBody List<Subject> subjects){
         User user = ShiroHelper.getCurrentUser();
         long userid = user.getId();
-        subjects.stream().forEach(subject -> subject.setUserId(userid));
-        subjects = service.save(subjects);
+        if(!subjects.isEmpty()){
+            subjects.stream().forEach(subject -> subject.setUserId(userid));
+            subjects = service.save(subjects);
+        }
         return subjects;
     }
 
     @ApiOperation(
-            value = "删除用户密码",
+            value = "同步用户密码记录",
+            notes = "注意：<br>" +
+                    "<h5>1.</h5>需要在登录状态下调用.<br>" +
+                    "<h5>2.</h5>应该将当前本地所有的用户密码记录列表同步到云，如果之前同步过的记录应该带有id一起同步，否则，同步成功后cloud端会生成id回传给app端.<br>" +
+                    "<h5>3.</h5>cloud端回传给app端是最新的用户密码记录列表,app端应该删除所有本地的用户密码记录列表，然后保存cloud端回传的.<br>" +
+                    "<h5>4.</h5>如果app传给cloud端的用户密码记录列表是空的，表明是想删除所有cloud的密码列表，这时cloud将会<font color='red'>清除该用户下的所有密码列表</font>.<br>",
+            response = Subject.class,
+            httpMethod = "POST",
+            consumes = "application/json",
+            produces = "application/json",
+            protocols = "http/https"
+    )
+    @ApiImplicitParam(name = "subjects",value = "Subject对象数组",defaultValue = "NULL",required = true,dataTypeClass = List.class)
+    @RequestMapping(value = "/synchronize",method = RequestMethod.POST)
+    public @ResponseBody List<Subject>  synchronize(@RequestBody List<Subject> subjects){
+        User user = ShiroHelper.getCurrentUser();
+        long userid = user.getId();
+        if(!subjects.isEmpty()){
+            subjects.stream().forEach(subject -> subject.setUserId(userid));
+            service.save(subjects);
+        }else {
+
+        }
+        return service.findByUserId(userid);
+    }
+
+    @ApiOperation(
+            value = "删除用户密码记录",
             notes = "<h5>1.</h5>需要在登录状态下调用.<br>" +
                     "<h5>2.</h5>只能删除属于当前登录用户的密码主体.<br>",
             response = CommonResponse.class,
