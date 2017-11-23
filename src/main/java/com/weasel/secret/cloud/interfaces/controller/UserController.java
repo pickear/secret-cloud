@@ -124,8 +124,8 @@ public class UserController {
             produces = "application/json",
             protocols = "http/https"
     )
-    @RequestMapping(value = "/hadLogin",method = RequestMethod.GET)
-    public @ResponseBody CommonResponse hadLogin(){
+    @RequestMapping(value = "/logined",method = RequestMethod.GET)
+    public @ResponseBody CommonResponse Logined(){
 
         Subject currentUser = SecurityUtils.getSubject();
         if (currentUser.isAuthenticated()) {
