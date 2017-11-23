@@ -65,4 +65,9 @@ public class SubjectTests extends SecretCloudApplicationTests {
         service.save(subject);
 
     }
+
+    @Test
+    public void deleteByUserId(){
+        service.deleteByUserId(9);
+    }
 }

@@ -109,7 +109,7 @@ public class SubjectController {
             subjects.stream().forEach(subject -> subject.setUserId(userid));
             service.save(subjects);
         }else {
-
+            service.deleteByUserId(userid);
         }
         return service.findByUserId(userid);
     }

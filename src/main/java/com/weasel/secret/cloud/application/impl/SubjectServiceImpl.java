@@ -46,4 +46,10 @@ public class SubjectServiceImpl implements SubjectService {
     public List<Subject> findByUserId(long userId) {
         return repository.findByUserId(userId);
     }
+
+    @Override
+    public void deleteByUserId(long userid) {
+        List<Subject> subjects = findByUserId(userid);
+        repository.delete(subjects);
+    }
 }

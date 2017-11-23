@@ -36,4 +36,10 @@ public interface SubjectService {
      * @return
      */
     List<Subject> findByUserId(long userId);
+
+    /**
+     *
+     * @param userid
+     */
+    void deleteByUserId(long userid);
 }
