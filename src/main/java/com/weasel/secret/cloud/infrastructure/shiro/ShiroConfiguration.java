@@ -42,14 +42,15 @@ public class ShiroConfiguration {
 	public SecurityManager securityManager() {
 		DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 		securityManager.setRealm(userRealm());
+		securityManager.setSessionManager(sessionManager());
 		return securityManager;
 	}
 
 	@Bean
 	public SessionManager sessionManager() {
 		DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-		sessionManager.setSessionValidationInterval(1800000); // 半小时检查一次session有效性
-		sessionManager.setGlobalSessionTimeout(7200000); // session 1小时过期
+		sessionManager.setSessionValidationInterval(3600000); // 1小时检查一次session有效性
+		sessionManager.setGlobalSessionTimeout(86400000); // session 24小时过期
 		return sessionManager;
 	}
 

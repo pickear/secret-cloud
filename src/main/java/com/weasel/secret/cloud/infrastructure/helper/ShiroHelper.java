@@ -14,7 +14,10 @@ public final class ShiroHelper {
      */
     public static User getCurrentUser(){
         org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
-        return (User) currentUser.getPrincipal();
+        if (currentUser.isAuthenticated()){
+            return (User) currentUser.getPrincipal();
+        }
+        return null;
     }
     protected ShiroHelper(){}
 }
