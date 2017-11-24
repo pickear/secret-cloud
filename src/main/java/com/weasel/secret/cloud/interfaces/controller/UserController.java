@@ -117,7 +117,7 @@ public class UserController {
 
     @ApiOperation(
             value = "是否已登录",
-            notes = "返回值为CommonResponse对象，code为0000表示已登录，0001表示没登录，message存放登录与否信息.<br>",
+            notes = "<h5>1.</h5>返回值为CommonResponse对象，code为0000表示已登录，0001表示没登录，message存放登录与否信息.<br>",
             response = CommonResponse.class,
             httpMethod = "GET",
             consumes = "application/json",
@@ -132,5 +132,27 @@ public class UserController {
            return CommonResponse.buildSuccess("用户已登录");
         }
         return CommonResponse.buildFail("用户未登录");
+    }
+
+    @ApiOperation(
+            value = "用户心跳",
+            notes = "<h5>1.</h5>返回值为CommonResponse对象，code为0000表示接收到心跳.<br>",
+            response = CommonResponse.class,
+            httpMethod = "GET",
+            consumes = "application/json",
+            produces = "application/json",
+            protocols = "http/https"
+    )
+    @RequestMapping(value = "/beat",method = RequestMethod.GET)
+    public @ResponseBody CommonResponse beat(){
+        if(logger.isDebugEnabled()){
+            User user = ShiroHelper.getCurrentUser();
+            if(null != user){
+                logger.debug("收到用户[{}]的心跳!",user.getUsername());
+            }else {
+                logger.debug("收到心跳!");
+            }
+        }
+        return CommonResponse.buildSuccess("接收到心跳");
     }
 }
