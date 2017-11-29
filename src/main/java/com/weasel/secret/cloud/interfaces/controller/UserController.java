@@ -40,7 +40,10 @@ public class UserController {
     @RequestMapping(path = "/query",method = RequestMethod.GET)
     public @ResponseBody User query(){
         User user = ShiroHelper.getCurrentUser();
-        return service.findByUsername(user.getUsername());
+        if(null != user){
+            return service.findByUsername(user.getUsername());
+        }
+        return null;
     }
 
     /**
