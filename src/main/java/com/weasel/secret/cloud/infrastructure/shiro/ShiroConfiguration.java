@@ -10,7 +10,6 @@ import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSource
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.web.servlet.Cookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +26,7 @@ import java.util.Map;
 @Configuration
 public class ShiroConfiguration {
 
-	public static final int ONE_MONTH = 60 * 60 * 24 * 30;
+	public static final int THREE_MONTH = 60 * 60 * 24 * 30 * 3;
 
 	@Bean(name = "shiroFilter")
 	public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
@@ -56,7 +55,7 @@ public class ShiroConfiguration {
 		securityManager.setSessionManager(sessionManager());
 
 		CookieRememberMeManager rememberMeManager = new CookieRememberMeManager();
-		rememberMeManager.getCookie().setMaxAge(Cookie.ONE_YEAR);
+		rememberMeManager.getCookie().setMaxAge(THREE_MONTH);
 		securityManager.setRememberMeManager(rememberMeManager);
 		return securityManager;
 	}
