@@ -30,7 +30,7 @@ public class ShiroRealm extends AuthorizingRealm {
 	public ShiroRealm() {
 		setName(REALM_NAME); // This name must match the name in the User
 								// class's getPrincipals() method
-		setCredentialsMatcher(new HashedCredentialsMatcher(Md5Hash.ALGORITHM_NAME));
+		//setCredentialsMatcher(new HashedCredentialsMatcher(Md5Hash.ALGORITHM_NAME));
 	}
 	
 	/**

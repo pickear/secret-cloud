@@ -126,7 +126,7 @@ public class SubjectController {
     )
     @ApiImplicitParam(name = "id",value = "Subject ID",defaultValue = "NULL",example = "1",required = true,dataTypeClass = Long.class)
     @RequestMapping(value = "/delete",method = RequestMethod.DELETE)
-    public @ResponseBody CommonResponse delete(Long id){
+    public @ResponseBody CommonResponse delete(@RequestParam("id") Long id){
 
         User user = ShiroHelper.getCurrentUser();
         List<Subject> subjects = service.findByUserId(user.getId());

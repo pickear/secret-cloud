@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -92,8 +91,8 @@ public class UserController {
             protocols = "http/https"
     )
     @ApiImplicitParam(name = "user",value = "用户对象",defaultValue = "NULL",required = true,dataTypeClass = User.class)
-    @RequestMapping(value = "/login",method = RequestMethod.POST)
-    public @ResponseBody CommonResponse login(@RequestBody User user, HttpServletRequest request){
+    @RequestMapping(value = "/login",method = {RequestMethod.POST,RequestMethod.GET})
+    public @ResponseBody CommonResponse login(User user, HttpServletRequest request){
 
         Assert.notNull(user,"user can not be null");
         Assert.hasLength(user.getUsername(),"username can not be empty");
@@ -104,8 +103,8 @@ public class UserController {
             if (currentUser.isAuthenticated()) {
                 currentUser.logout();
             }
-            boolean rememberMe = ServletRequestUtils.getBooleanParameter(request, "rememberMe", false);
-            UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword(), rememberMe);
+            user.encodePassword();
+            UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword(), true);
             currentUser.login(token); // 登录
         }catch (IncorrectCredentialsException exception){
             logger.warn("用户[{}]输入的密码不正确。",user.getUsername());
