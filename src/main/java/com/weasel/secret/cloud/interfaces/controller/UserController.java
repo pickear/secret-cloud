@@ -92,7 +92,7 @@ public class UserController {
     )
     @ApiImplicitParam(name = "user",value = "用户对象",defaultValue = "NULL",required = true,dataTypeClass = User.class)
     @RequestMapping(value = "/login",method = {RequestMethod.POST,RequestMethod.GET})
-    public @ResponseBody CommonResponse login(User user, HttpServletRequest request){
+    public @ResponseBody CommonResponse login(@RequestBody User user, HttpServletRequest request){
 
         Assert.notNull(user,"user can not be null");
         Assert.hasLength(user.getUsername(),"username can not be empty");
