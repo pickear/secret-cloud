@@ -8,3 +8,6 @@ spring:
     username: root
     password: ENC(SrpFBcVD89eTQ2icOD0TMg==)
     driver-class-name: com.mysql.jdbc.Driver
+
+file:
+    path: E:\repository\com\weasel\secret\common\secret-common\1.0-SNAPSHOT
