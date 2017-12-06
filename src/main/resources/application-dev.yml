@@ -10,4 +10,5 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
 
 file:
-    path: E:\repository\com\weasel\secret\common\secret-common\1.0-SNAPSHOT
+    path: D:\apks
+    url: http://127.0.0.1:3330/download

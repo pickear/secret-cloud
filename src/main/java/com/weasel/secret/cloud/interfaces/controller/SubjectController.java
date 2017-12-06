@@ -8,6 +8,8 @@ import com.weasel.secret.common.protocol.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,7 @@ import java.util.List;
 @Api(value = "密码",description = "密码操作相关文档",protocols = "http/https",consumes = "application/json",produces = "application/json")
 public class SubjectController {
 
+    private final static Logger logger = LoggerFactory.getLogger(SubjectController.class);
     @Autowired
     private SubjectService service;
 
@@ -30,7 +33,6 @@ public class SubjectController {
     )
     @RequestMapping(value = "/list",method = RequestMethod.GET)
     public @ResponseBody List<Subject> list(){
-
         User user = ShiroHelper.getCurrentUser();
         long userid = user.getId();
         List<Subject> subjects = service.findByUserId(userid);
@@ -54,6 +56,7 @@ public class SubjectController {
     @RequestMapping(value = "/save",method = RequestMethod.POST)
     public @ResponseBody Subject save(@RequestBody Subject subject){
         User user = ShiroHelper.getCurrentUser();
+        logger.info("用户[{}]保存密码数据",user.getUsername());
         long userid = user.getId();
         subject.setUserId(userid);
         subject = service.save(subject);
@@ -79,6 +82,7 @@ public class SubjectController {
     @RequestMapping(value = "/save-list",method = RequestMethod.POST)
     public @ResponseBody List<Subject> save(@RequestBody List<Subject> subjects){
         User user = ShiroHelper.getCurrentUser();
+        logger.info("用户[{}]批量保存密码数据",user.getUsername());
         long userid = user.getId();
         if(!subjects.isEmpty()){
             subjects.stream().forEach(subject -> subject.setUserId(userid));
@@ -104,11 +108,13 @@ public class SubjectController {
     @RequestMapping(value = "/synchronize",method = RequestMethod.POST)
     public @ResponseBody List<Subject>  synchronize(@RequestBody List<Subject> subjects){
         User user = ShiroHelper.getCurrentUser();
+        logger.info("用户[{}]开始同步数据!",user.getUsername());
         long userid = user.getId();
         if(!subjects.isEmpty()){
             subjects.stream().forEach(subject -> subject.setUserId(userid));
             service.save(subjects);
         }else {
+            logger.info("删除用户[{}]所有密码数据!",user.getUsername());
             service.deleteByUserId(userid);
         }
         return service.findByUserId(userid);
@@ -135,8 +141,10 @@ public class SubjectController {
                             .findFirst()
                             .orElse(null);
         if(null == s){
+            logger.error("用户[{}]删除密码数据[{}]失败,该数据不属于此用户!",user.getUsername(),id);
             return CommonResponse.buildFail("id为["+id+"]的密码主体不属于当前用户");
         }
+        logger.info("用户[{}]删除密码数据[{}]!",user.getUsername(),id);
         int result = service.delete(id);
         if(result == 0){
             return CommonResponse.buildFail("删除失败");

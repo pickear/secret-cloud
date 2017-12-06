@@ -27,6 +27,11 @@ import java.util.Map;
 public class ShiroConfiguration {
 
 	public static final int THREE_MONTH = 60 * 60 * 24 * 30 * 3;
+	public static final int ONE_SECOND = 1000*1;
+	public static final int THIRTY_SECOND = ONE_SECOND * 30;
+	public static final int ONE_MINUTE = ONE_SECOND * 60;
+	public static final int THIRTY_MINUTE = ONE_MINUTE * 30;
+	public static final int ONE_HOUR = ONE_MINUTE * 60;
 
 	@Bean(name = "shiroFilter")
 	public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
@@ -63,8 +68,8 @@ public class ShiroConfiguration {
 	@Bean
 	public SessionManager sessionManager() {
 		DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-		sessionManager.setSessionValidationInterval(1800000); // 半小时检查一次session有效性
-		sessionManager.setGlobalSessionTimeout(3600000); // session 1小时过期
+		sessionManager.setSessionValidationInterval(THIRTY_MINUTE); // 半小时检查一次session有效性
+		sessionManager.setGlobalSessionTimeout(THIRTY_SECOND); // session 1小时过期
 		return sessionManager;
 	}
 

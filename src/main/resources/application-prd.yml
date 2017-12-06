@@ -10,4 +10,5 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
 
 file:
-    path: /user/local/applications/secret/apks
+    path: /usr/local/applications/secre/apks
+    url: https://secret.kisme.org/download
