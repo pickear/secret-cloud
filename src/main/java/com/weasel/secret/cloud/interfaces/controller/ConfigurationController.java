@@ -129,7 +129,7 @@ public class ConfigurationController {
             httpMethod = "GET",
             protocols = "http/https"
     )
-    @ApiImplicitParam(name = "update-info",value = "0.1",defaultValue = "0.0",example = "1.0",required = true,dataTypeClass = Float.class)
+    @ApiImplicitParam(name = "version",value = "0.1",defaultValue = "0.0",example = "1.0",required = true,dataTypeClass = Float.class)
     @RequestMapping(value = "/update-info",method = RequestMethod.GET)
     public @ResponseBody UpdateInfo updateInfo(@RequestParam(value = "version") float version) throws IOException {
 
