@@ -73,6 +73,7 @@ public class ConfigurationController {
                                 .findFirst()
                                 .orElse("");
                 if (null == fileName || "" == fileName){
+                    logger.warn("在目录[{}]下找不到版本号为[{}]的apk文件!",path,version);
                     response.setStatus(404);
                     response.setContentType("text/html;charset=utf-8");
                     outputStream.write("找不到您要下载的文件".getBytes(Charset.forName("utf-8")));
@@ -140,16 +141,25 @@ public class ConfigurationController {
 
         //如果文件找不到，说明传过来的版本号文件不存在
         if(null == maxVersionFile){
-            return new UpdateInfo(false,false,0.0f,"","",0);
+            logger.warn("在目录[{}]下找不到版本号为[{}]的apk文件!",path,version);
+            return new UpdateInfo(false,false,0.0f,"","","",0);
         }
         float maxVersion = getVersion(maxVersionFile.getName());
         long size = FileUtils.sizeOf(maxVersionFile);
         String md5 = Md5Helper.md5Hex(maxVersionFile);
+        String description = "小编也不知道更新了啥!";
+        String descriptionFileName = "version-description.txt";
+        try {
+            description = FileUtils.readFileToString(
+                    new File(path + File.separator+descriptionFileName),Charset.forName("UTF-8"));
+        }catch (Exception e){
+            logger.warn("在目录[{}]下找不到文件[{}]!",path,descriptionFileName);
+        }
         /**
          * 通常maxVersion > version,说明有新版本更新
          * 约定地，maxVersion - version >= 1说明版本差别较大，需要强制更新
          */
-        return new UpdateInfo(maxVersion > version,maxVersion - version >= 1,maxVersion,url,md5,size);
+        return new UpdateInfo(maxVersion > version,maxVersion - version >= 1,maxVersion,description,url,md5,size);
     }
 
     /**
