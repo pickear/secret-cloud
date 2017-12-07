@@ -42,4 +42,10 @@ public interface SubjectService {
      * @param userid
      */
     void deleteByUserId(long userid);
+
+    /**
+     *
+     * @param shouldDelete
+     */
+    void deleteAll(List<Subject> shouldDelete);
 }

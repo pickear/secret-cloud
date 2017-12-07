@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by dell on 2017/11/13.
@@ -39,6 +41,7 @@ public class SubjectController {
         return subjects;
     }
 
+
     @ApiOperation(
             value = "添加/编辑用户密码记录",
             notes = "注意：<br>" +
@@ -63,7 +66,7 @@ public class SubjectController {
         return subject;
     }
 
-
+    /*
     @ApiOperation(
             value = "批量添加/编辑用户密码记录",
             notes = "注意：<br>" +
@@ -90,14 +93,14 @@ public class SubjectController {
         }
         return subjects;
     }
-
+*/
     @ApiOperation(
             value = "同步用户密码记录",
             notes = "注意：<br>" +
                     "<h5>1.</h5>需要在登录状态下调用.<br>" +
-                    "<h5>2.</h5>应该将当前本地所有的用户密码记录列表同步到云，如果之前同步过的记录应该带有id一起同步，否则，同步成功后cloud端会生成id回传给app端.<br>" +
-                    "<h5>3.</h5>cloud端回传给app端是最新的用户密码记录列表,app端应该删除所有本地的用户密码记录列表，然后保存cloud端回传的.<br>" +
-                    "<h5>4.</h5>如果app传给cloud端的用户密码记录列表是空的，表明是想删除所有cloud的密码列表，这时cloud将会<font color='red'>清除该用户下的所有密码列表</font>.<br>",
+                    "<h5>2.</h5>Subject列表中，如果Subect的isDeleted属性为true，表示需要删除的。如果Id不为null，表示需要更新。如果Id为null，表示需要更新该数据。如果数据是需要更新的，updateTime需要比Cloud端保存的该数据updateTime要晚才会做更新操作.<br>" +
+                    "<h5>3.</h5>应该将当前本地所有的用户密码记录列表同步到云，如果之前同步过的记录应该带有id一起同步，否则，同步成功后cloud端会生成id回传给app端.<br>" +
+                    "<h5>4.</h5>cloud端回传给app端是最新的用户密码记录列表,app端应该删除所有本地的用户密码记录列表，然后保存cloud端回传的.<br>" ,
             response = Subject.class,
             httpMethod = "POST",
             consumes = "application/json",
@@ -111,11 +114,41 @@ public class SubjectController {
         logger.info("用户[{}]开始同步数据!",user.getUsername());
         long userid = user.getId();
         if(!subjects.isEmpty()){
-            subjects.stream().forEach(subject -> subject.setUserId(userid));
-            service.save(subjects);
-        }else {
-            logger.info("删除用户[{}]所有密码数据!",user.getUsername());
-            service.deleteByUserId(userid);
+            //将需要删除的和需要更新或添加的分组
+            Map<Boolean,List<Subject>> subjectGroup = subjects.stream()
+                                                              .map(subject -> subject.setUserId(userid))
+                                                              .collect(Collectors.groupingBy(Subject::isDeleted));
+
+            List<Subject> userSubjects = service.findByUserId(user.getId());
+
+            //过滤掉不属于该用户的subject，防止恶意删除。
+            List<Subject> shouldDelete = subjectGroup.get(true);
+            if(null != shouldDelete && !shouldDelete.isEmpty()){
+
+                shouldDelete = shouldDelete.stream()
+                                           .filter(subject -> userSubjects.contains(subject))
+                                           .collect(Collectors.toList());
+
+                service.deleteAll(shouldDelete);
+            }
+
+            //获取那些需要新增或者更新的数据。id为null需要新增，updateTime比数据库的晚要更新。
+            List<Subject> shouldSave = subjectGroup.get(false);
+            if(null != shouldSave && !shouldSave.isEmpty()){
+
+                shouldSave = shouldSave.stream()
+                                        .filter(subject -> {
+                                            Subject _suject = userSubjects.stream()
+                                                    .filter(_subject -> subject.getId() == _subject.getId())
+                                                    .findFirst()
+                                                    .orElse(null);
+                                            //id 为null说明是需要新增的，_subject为null说明不存在，也是需要新增的。更新时间比数据库的时候晚的话，需要更新。
+                                            return null == subject.getId() || null == _suject || _suject.getUpdateTime().before(subject.getUpdateTime());
+                                        })
+                                        .collect(Collectors.toList());
+
+                service.save(shouldSave);
+            }
         }
         return service.findByUserId(userid);
     }
