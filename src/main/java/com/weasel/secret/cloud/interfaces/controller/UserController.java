@@ -19,6 +19,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * Created by dell on 2017/11/10.
@@ -76,6 +77,9 @@ public class UserController {
             return user;
         }
         user.encodePassword();
+        Date currentDate = new Date();
+        user.setCreateTime(currentDate);
+        user.setUpdateTime(currentDate);
         user = service.save(user);
         return user;
     }
