@@ -12,3 +12,13 @@ spring:
 file:
     path: D:\apks
     url: http://127.0.0.1:3330/download
+
+logging:
+  level:
+     root: info
+     org:
+       springframework: warn
+       hibernate: warn
+       eclipse: warn
+       apache: warn
+  file: "logs/application.log"

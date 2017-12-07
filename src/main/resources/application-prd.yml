@@ -12,3 +12,13 @@ spring:
 file:
     path: /usr/local/applications/secret/apks
     url: https://secret.kisme.org/download
+
+logging:
+  level:
+     root: info
+     org:
+       springframework: warn
+       hibernate: warn
+       eclipse: warn
+       apache: warn
+  file: "logs/application.log"
