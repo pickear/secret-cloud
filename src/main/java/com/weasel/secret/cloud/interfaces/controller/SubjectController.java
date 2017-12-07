@@ -112,45 +112,7 @@ public class SubjectController {
     public @ResponseBody List<Subject>  synchronize(@RequestBody List<Subject> subjects){
         User user = ShiroHelper.getCurrentUser();
         logger.info("用户[{}]开始同步数据!",user.getUsername());
-        long userid = user.getId();
-        if(!subjects.isEmpty()){
-            //将需要删除的和需要更新或添加的分组
-            Map<Boolean,List<Subject>> subjectGroup = subjects.stream()
-                                                              .map(subject -> subject.setUserId(userid))
-                                                              .collect(Collectors.groupingBy(Subject::isDeleted));
-
-            List<Subject> userSubjects = service.findByUserId(user.getId());
-
-            //过滤掉不属于该用户的subject，防止恶意删除。
-            List<Subject> shouldDelete = subjectGroup.get(true);
-            if(null != shouldDelete && !shouldDelete.isEmpty()){
-
-                shouldDelete = shouldDelete.stream()
-                                           .filter(subject -> userSubjects.contains(subject))
-                                           .collect(Collectors.toList());
-
-                service.deleteAll(shouldDelete);
-            }
-
-            //获取那些需要新增或者更新的数据。id为null需要新增，updateTime比数据库的晚要更新。
-            List<Subject> shouldSave = subjectGroup.get(false);
-            if(null != shouldSave && !shouldSave.isEmpty()){
-
-                shouldSave = shouldSave.stream()
-                                        .filter(subject -> {
-                                            Subject _suject = userSubjects.stream()
-                                                    .filter(_subject -> subject.getId() == _subject.getId())
-                                                    .findFirst()
-                                                    .orElse(null);
-                                            //id 为null说明是需要新增的，_subject为null说明不存在，也是需要新增的。更新时间比数据库的时候晚的话，需要更新。
-                                            return null == subject.getId() || null == _suject || _suject.getUpdateTime().before(subject.getUpdateTime());
-                                        })
-                                        .collect(Collectors.toList());
-
-                service.save(shouldSave);
-            }
-        }
-        return service.findByUserId(userid);
+        return service.synchronize(user,subjects);
     }
 
     @ApiOperation(

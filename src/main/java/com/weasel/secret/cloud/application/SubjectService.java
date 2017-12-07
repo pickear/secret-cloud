@@ -1,6 +1,7 @@
 package com.weasel.secret.cloud.application;
 
 import com.weasel.secret.common.domain.Subject;
+import com.weasel.secret.common.domain.User;
 
 import java.util.List;
 
@@ -48,4 +49,11 @@ public interface SubjectService {
      * @param shouldDelete
      */
     void deleteAll(List<Subject> shouldDelete);
+
+    /**
+     * 同步数据，并返回最新的所有数据
+     * @param subjects
+     * @return
+     */
+    List<Subject> synchronize(User user, List<Subject> subjects);
 }
