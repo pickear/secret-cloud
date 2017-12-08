@@ -2,6 +2,7 @@ package com.weasel.secret.cloud.application.impl;
 
 import com.google.common.collect.Lists;
 import com.weasel.secret.cloud.application.SubjectService;
+import com.weasel.secret.cloud.infrastructure.helper.GsonHelper;
 import com.weasel.secret.cloud.infrastructure.persist.SubjectRepository;
 import com.weasel.secret.common.domain.Subject;
 import com.weasel.secret.common.domain.User;
@@ -69,22 +70,28 @@ public class SubjectServiceImpl implements SubjectService {
         if(!subjects.isEmpty()){
             //将需要删除的和需要更新或添加的分组
             Map<Boolean,List<Subject>> subjectGroup = subjects.stream()
-                    .map(subject -> subject.setUserId(userid))
-                    .collect(Collectors.groupingBy(Subject::isDeleted));
+                                                              .map(subject -> subject.setUserId(userid))
+                                                              .collect(Collectors.groupingBy(Subject::isDeleted));
 
-            List<Subject> userSubjects = findByUserId(user.getId());
+            List<Subject> userSubjects = findByUserId(userid);
 
             //过滤掉不属于该用户的subject，防止恶意删除。
             List<Subject> shouldDelete = subjectGroup.get(true);
             if(null != shouldDelete && !shouldDelete.isEmpty()){
                 shouldDelete = filterNotContain(shouldDelete,userSubjects);
+                if(logger.isDebugEnabled()){
+                    logger.debug("删除用户[{}]密码数据:",user.getUsername(), GsonHelper.toJson(shouldDelete));
+                }
                 deleteAll(shouldDelete);
             }
 
             //获取那些需要新增或者更新的数据。id为null需要新增，updateTime比数据库的晚要更新。
             List<Subject> shouldSave = subjectGroup.get(false);
             if(null != shouldSave && !shouldSave.isEmpty()){
-                shouldSave = filterNotContain(shouldSave,userSubjects);
+                shouldSave = filterShouldNotUpdate(shouldSave,userSubjects);
+                if(logger.isDebugEnabled()){
+                    logger.debug("保存用户[{}]密码数据:",user.getUsername(), GsonHelper.toJson(shouldSave));
+                }
                 save(shouldSave);
             }
         }
