@@ -1,5 +1,6 @@
 package com.weasel.secret.cloud.infrastructure.shiro.filter;
 
+import com.weasel.secret.cloud.infrastructure.helper.ShiroHelper;
 import com.weasel.secret.common.domain.User;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -25,10 +26,9 @@ public class AutoLoginFilter extends AdviceFilter {
 
         Subject currentUser = SecurityUtils.getSubject();
         if(currentUser.isRemembered()) {
-            User user = (User) SecurityUtils.getSubject().getPrincipal();
+            User user = ShiroHelper.getCurrentUser();
             if(null != user){
                 logger.info("用户[{}]自动登录!",user.getUsername());
-               /* user = userService.findByUsername(user.getUsername());*/
                 try {
                     UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword(), true);
                     currentUser.login(token); // 登录
@@ -37,6 +37,8 @@ public class AutoLoginFilter extends AdviceFilter {
                 } catch (UnknownAccountException exception) {
                     logger.warn("用户名[{}]不存在。", user.getUsername());
                 }
+            }else {
+                logger.error("用户信息获取出错,无法实现自动登录!");
             }
         }
         return true;

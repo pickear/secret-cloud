@@ -14,7 +14,7 @@ public final class ShiroHelper {
      */
     public static User getCurrentUser(){
         org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
-        if (currentUser.isAuthenticated()){
+        if (currentUser.isAuthenticated() || currentUser.isRemembered()){
             return (User) currentUser.getPrincipal();
         }
         return null;

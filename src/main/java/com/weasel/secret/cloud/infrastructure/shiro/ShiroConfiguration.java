@@ -3,6 +3,7 @@ package com.weasel.secret.cloud.infrastructure.shiro;
 import com.google.common.collect.Maps;
 import com.weasel.secret.cloud.infrastructure.shiro.filter.AutoLoginFilter;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.codec.Base64;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
@@ -33,6 +34,9 @@ public class ShiroConfiguration {
 	public static final int THIRTY_MINUTE = ONE_MINUTE * 30;
 	public static final int ONE_HOUR = ONE_MINUTE * 60;
 
+	private String cipherKey = "SrpFBcVD89eTQ2icOD0TMg==";
+
+
 	@Bean(name = "shiroFilter")
 	public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
 
@@ -61,6 +65,7 @@ public class ShiroConfiguration {
 
 		CookieRememberMeManager rememberMeManager = new CookieRememberMeManager();
 		rememberMeManager.getCookie().setMaxAge(THREE_MONTH);
+		rememberMeManager.setCipherKey(Base64.decode(cipherKey.getBytes()));
 		securityManager.setRememberMeManager(rememberMeManager);
 		return securityManager;
 	}

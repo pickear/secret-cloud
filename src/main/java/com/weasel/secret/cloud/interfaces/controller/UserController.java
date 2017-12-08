@@ -19,6 +19,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 /**
@@ -95,7 +96,7 @@ public class UserController {
             protocols = "http/https"
     )
     @ApiImplicitParam(name = "user",value = "用户对象",defaultValue = "NULL",required = true,dataTypeClass = User.class)
-    @RequestMapping(value = "/login",method = {RequestMethod.POST,RequestMethod.GET})
+    @RequestMapping(value = "/login",method = {RequestMethod.POST})
     public @ResponseBody CommonResponse login(@RequestBody User user, HttpServletRequest request){
 
         Assert.notNull(user,"user can not be null");
@@ -119,6 +120,14 @@ public class UserController {
         }
         logger.info("用户[{}]登录成功!",user.getUsername());
         return CommonResponse.buildSuccess("登录成功");
+    }
+
+    @RequestMapping(value = "/login",method = {RequestMethod.GET})
+    public String login(HttpServletResponse response){
+
+        response.setHeader("logined","false");
+
+        return "请重新登录!";
     }
 
     @ApiOperation(
