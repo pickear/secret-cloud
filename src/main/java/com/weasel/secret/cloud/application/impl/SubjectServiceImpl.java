@@ -78,7 +78,7 @@ public class SubjectServiceImpl implements SubjectService {
             //过滤掉不属于该用户的subject，防止恶意删除。
             List<Subject> shouldDelete = subjectGroup.get(true);
             if(null != shouldDelete && !shouldDelete.isEmpty()){
-                shouldDelete = filterNotContain(shouldDelete,userSubjects);
+                shouldDelete = ingnoreNotContain(shouldDelete,userSubjects);
                 if(logger.isDebugEnabled()){
                     logger.debug("删除用户[{}]密码数据:",user.getUsername(), GsonHelper.toJson(shouldDelete));
                 }
@@ -88,7 +88,7 @@ public class SubjectServiceImpl implements SubjectService {
             //获取那些需要新增或者更新的数据。id为null需要新增，updateTime比数据库的晚要更新。
             List<Subject> shouldSave = subjectGroup.get(false);
             if(null != shouldSave && !shouldSave.isEmpty()){
-                shouldSave = filterShouldNotUpdate(shouldSave,userSubjects);
+                shouldSave = ingnoreShouldNotUpdate(shouldSave,userSubjects);
                 if(logger.isDebugEnabled()){
                     logger.debug("保存用户[{}]密码数据:",user.getUsername(), GsonHelper.toJson(shouldSave));
                 }
@@ -104,7 +104,7 @@ public class SubjectServiceImpl implements SubjectService {
      * @param totalSubjects
      * @return
      */
-    private List<Subject> filterNotContain(List<Subject> desSubjects,List<Subject> totalSubjects){
+    private List<Subject> ingnoreNotContain(List<Subject> desSubjects, List<Subject> totalSubjects){
         Assert.notNull(desSubjects,"desSubjects参数不能为null");
         Assert.notNull(desSubjects,"totalSubjects参数不能为null");
 
@@ -113,7 +113,13 @@ public class SubjectServiceImpl implements SubjectService {
                            .collect(Collectors.toList());
     }
 
-    private List<Subject> filterShouldNotUpdate(List<Subject> desSubjects,List<Subject> totalSubjects){
+    /**
+     * 过滤掉那些不需要更新的记录，保留需要更新或者新增的
+     * @param desSubjects
+     * @param totalSubjects
+     * @return
+     */
+    private List<Subject> ingnoreShouldNotUpdate(List<Subject> desSubjects, List<Subject> totalSubjects){
         Assert.notNull(desSubjects,"desSubjects参数不能为null");
         Assert.notNull(desSubjects,"totalSubjects参数不能为null");
 
