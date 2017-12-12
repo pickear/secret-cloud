@@ -75,7 +75,7 @@ public class ShiroConfiguration {
 	public SessionManager sessionManager() {
 		DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
 		sessionManager.setSessionValidationInterval(THIRTY_MINUTE); // 半小时检查一次session有效性
-		sessionManager.setGlobalSessionTimeout(THIRTY_SECOND); // session 1小时过期
+		sessionManager.setGlobalSessionTimeout(ONE_HOUR); // session 1小时过期
 		return sessionManager;
 	}
 

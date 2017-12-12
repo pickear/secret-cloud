@@ -82,6 +82,11 @@ public class UserController {
         user.setCreateTime(currentDate);
         user.setUpdateTime(currentDate);
         user = service.save(user);
+
+        UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword(), true);
+        Subject currentUser = SecurityUtils.getSubject();
+        currentUser.login(token); // 登录
+
         return user;
     }
 
