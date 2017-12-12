@@ -78,9 +78,9 @@ public class UserController {
             return user;
         }
         user.encodePassword();
-        Date currentDate = new Date();
-        user.setCreateTime(currentDate);
-        user.setUpdateTime(currentDate);
+        Long currentTime = System.currentTimeMillis();
+        user.setCreateTime(currentTime);
+        user.setUpdateTime(currentTime);
         user = service.save(user);
 
         UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword(), true);

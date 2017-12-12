@@ -130,13 +130,13 @@ public class SubjectServiceImpl implements SubjectService {
                                                                .findFirst()
                                                                .orElse(null);
                                 //id 为null说明是需要新增的，_subject为null说明不存在，也是需要新增的。更新时间比数据库的时候晚的话，需要更新。
-                                return null == subject.getId() || null == _suject || _suject.getUpdateTime().before(subject.getUpdateTime());
+                                return null == subject.getId() || null == _suject || _suject.getUpdateTime() < subject.getUpdateTime();
                             })
                             .map(subject -> {
-                                Date currentDate = new Date();
-                                subject.setUpdateTime(currentDate);
+                                Long currentTime = System.currentTimeMillis();
+                                subject.setUpdateTime(currentTime);
                                 if (null == subject.getId()){
-                                    subject.setCreateTime(currentDate);
+                                    subject.setCreateTime(currentTime);
                                 }
                                 return subject;
                             })
