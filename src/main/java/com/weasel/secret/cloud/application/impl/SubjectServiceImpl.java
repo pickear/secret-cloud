@@ -149,7 +149,9 @@ public class SubjectServiceImpl implements SubjectService {
                                            .filter(secret -> {
                                                boolean include = (secret.getId() == null || oldSecrets.contains(secret));
                                                if(logger.isDebugEnabled()){
-                                                   logger.debug("secret [{}] will be inclue...",secret.getId());
+                                                   if(include){
+                                                       logger.debug("secret [{}] will be inclue...",secret.getId());
+                                                   }
                                                }
                                                return include;
                                            })
