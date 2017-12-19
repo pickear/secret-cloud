@@ -1,6 +1,7 @@
 package com.weasel.secret.cloud.interfaces.controller;
 
 import com.weasel.secret.cloud.application.SubjectService;
+import com.weasel.secret.cloud.infrastructure.helper.GsonHelper;
 import com.weasel.secret.cloud.infrastructure.helper.ShiroHelper;
 import com.weasel.secret.common.domain.Subject;
 import com.weasel.secret.common.domain.User;
@@ -58,6 +59,7 @@ public class SubjectController {
     public @ResponseBody Subject save(@RequestBody Subject subject){
         User user = ShiroHelper.getCurrentUser();
         logger.info("用户[{}]保存密码数据",user.getUsername());
+        logger.debug(GsonHelper.toJson(subject));
         long userid = user.getId();
         subject.setUserId(userid);
         subject = service.save(subject);
@@ -110,7 +112,10 @@ public class SubjectController {
     public @ResponseBody List<Subject>  synchronize(@RequestBody List<Subject> subjects){
         User user = ShiroHelper.getCurrentUser();
         logger.info("用户[{}]开始同步数据!",user.getUsername());
-        return service.synchronize(user,subjects);
+        logger.debug("param : {}",GsonHelper.toJson(subjects));
+        List<Subject> result = service.synchronize(user,subjects);
+        logger.debug("result : {}",GsonHelper.toJson(subjects));
+        return result;
     }
 
     @ApiOperation(

@@ -42,31 +42,21 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Subject save(Subject subject) {
-        if(null != subject.getId()){
-            List<Secret> oldSecrets = repository.findOne(subject.getId())
-                                                .getSecrets();
-            ingnoreNotContainSecret(subject,oldSecrets);
-        }else {
-            subject.getSecrets()
-                    .forEach(secret -> secret.setId(null));
-        }
 
+        ingnoreNotContainSecret(subject);
+        if(logger.isDebugEnabled()){
+            logger.debug("save data: {}",GsonHelper.toJson(subject));
+        }
         return repository.save(subject);
     }
 
     @Override
     public List<Subject> save(List<Subject> subjects) {
 
-        subjects.forEach(subject -> {
-            if(null != subject.getId()){
-                List<Secret> oldSecrets = repository.findOne(subject.getId())
-                                                    .getSecrets();
-                ingnoreNotContainSecret(subject,oldSecrets);
-            }else {
-                subject.getSecrets()
-                       .forEach(secret -> secret.setId(null));
-            }
-        });
+        subjects.forEach(subject -> ingnoreNotContainSecret(subject));
+        if(logger.isDebugEnabled()){
+            logger.debug("save data: {}",GsonHelper.toJson(subjects));
+        }
         return Lists.newArrayList(repository.save(subjects));
     }
 
@@ -143,15 +133,26 @@ public class SubjectServiceImpl implements SubjectService {
     /**
      *过滤掉不属于不包含在totalSecrets里的secret数据
      * @param subject
-     * @param totalSecrets
+     * @param
      * @return
      */
-    private void ingnoreNotContainSecret(final Subject subject,List<Secret> totalSecrets){
-        List<Secret> secrets =  subject.getSecrets()
-                                       .stream()
-                                       .filter(secret -> secret.getId() == null || totalSecrets.contains(secret))
-                                       .collect(Collectors.toList());
-        subject.setSecrets(secrets);
+    private void ingnoreNotContainSecret(final Subject subject){
+
+        if(null != subject.getId()){
+            List<Secret> oldSecrets = repository.findOne(subject.getId())
+                                                .getSecrets();
+            if(logger.isDebugEnabled()){
+                logger.debug("current data: {}",GsonHelper.toJson(oldSecrets));
+            }
+            List<Secret> secrets =  subject.getSecrets()
+                                           .stream()
+                                           .filter(secret -> secret.getId() == null || oldSecrets.contains(secret))
+                                           .collect(Collectors.toList());
+            subject.setSecrets(secrets);
+        }else {
+            subject.getSecrets()
+                    .forEach(secret -> secret.setId(null));
+        }
     }
 
     /**

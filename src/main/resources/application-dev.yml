@@ -21,4 +21,6 @@ logging:
        hibernate: warn
        eclipse: warn
        apache: warn
+     com:
+       weasel: debug
   file: "logs/application.log"
