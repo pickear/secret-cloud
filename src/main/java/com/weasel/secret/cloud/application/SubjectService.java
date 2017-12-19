@@ -56,4 +56,11 @@ public interface SubjectService {
      * @return
      */
     List<Subject> synchronize(User user, List<Subject> subjects);
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    Subject findOne(Long id);
 }

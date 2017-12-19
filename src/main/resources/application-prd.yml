@@ -8,8 +8,7 @@ spring:
     username: root
     password: ENC(SrpFBcVD89eTQ2icOD0TMg==)
     driver-class-name: com.mysql.jdbc.Driver
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
+
 
 file:
     path: /usr/local/applications/secret/apks

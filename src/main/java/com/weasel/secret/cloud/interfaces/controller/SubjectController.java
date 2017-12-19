@@ -61,7 +61,7 @@ public class SubjectController {
         long userid = user.getId();
         subject.setUserId(userid);
         subject = service.save(subject);
-        return subject;
+        return service.findOne(subject.getId());
     }
 
     /*

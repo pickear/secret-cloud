@@ -4,15 +4,16 @@ import com.google.common.collect.Lists;
 import com.weasel.secret.cloud.application.SubjectService;
 import com.weasel.secret.cloud.infrastructure.helper.GsonHelper;
 import com.weasel.secret.cloud.infrastructure.persist.SubjectRepository;
+import com.weasel.secret.common.domain.Secret;
 import com.weasel.secret.common.domain.Subject;
 import com.weasel.secret.common.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
  * Created by Dylan on 2017/11/12.
  */
 @Service
+@Transactional
 public class SubjectServiceImpl implements SubjectService {
 
     private static final Logger logger = LoggerFactory.getLogger(SubjectServiceImpl.class);
@@ -40,11 +42,31 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Subject save(Subject subject) {
+        if(null != subject.getId()){
+            List<Secret> oldSecrets = repository.findOne(subject.getId())
+                                                .getSecrets();
+            ingnoreNotContainSecret(subject,oldSecrets);
+        }else {
+            subject.getSecrets()
+                    .forEach(secret -> secret.setId(null));
+        }
+
         return repository.save(subject);
     }
 
     @Override
     public List<Subject> save(List<Subject> subjects) {
+
+        subjects.forEach(subject -> {
+            if(null != subject.getId()){
+                List<Secret> oldSecrets = repository.findOne(subject.getId())
+                                                    .getSecrets();
+                ingnoreNotContainSecret(subject,oldSecrets);
+            }else {
+                subject.getSecrets()
+                       .forEach(secret -> secret.setId(null));
+            }
+        });
         return Lists.newArrayList(repository.save(subjects));
     }
 
@@ -98,6 +120,11 @@ public class SubjectServiceImpl implements SubjectService {
         return findByUserId(userid);
     }
 
+    @Override
+    public Subject findOne(Long id) {
+        return repository.findOne(id);
+    }
+
     /**
      * 过滤掉并不包含在totalSubjects的desSubjects数据
      * @param desSubjects
@@ -111,6 +138,20 @@ public class SubjectServiceImpl implements SubjectService {
         return desSubjects.stream()
                            .filter(subject -> totalSubjects.contains(subject))
                            .collect(Collectors.toList());
+    }
+
+    /**
+     *过滤掉不属于不包含在totalSecrets里的secret数据
+     * @param subject
+     * @param totalSecrets
+     * @return
+     */
+    private void ingnoreNotContainSecret(final Subject subject,List<Secret> totalSecrets){
+        List<Secret> secrets =  subject.getSecrets()
+                                       .stream()
+                                       .filter(secret -> secret.getId() == null || totalSecrets.contains(secret))
+                                       .collect(Collectors.toList());
+        subject.setSecrets(secrets);
     }
 
     /**

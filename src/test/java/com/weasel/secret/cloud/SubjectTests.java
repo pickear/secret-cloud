@@ -30,9 +30,11 @@ public class SubjectTests extends SecretCloudApplicationTests {
 
         List<Secret> secrets = Lists.newArrayList();
         Secret s1 = new Secret();
+        s1.setId(new Long(30));
         s1.setName("登录密码");
         s1.setValue("sdfsafdsaf");
         Secret s2 = new Secret();
+        s2.setId(new Long(40));
         s2.setName("取款密码");
         s2.setValue("sfdsff");
         secrets.add(s1);
