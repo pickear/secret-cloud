@@ -155,7 +155,7 @@ public class SubjectServiceImpl implements SubjectService {
                                            })
                                            .collect(Collectors.toList());
             if(logger.isDebugEnabled()){
-                logger.debug("filted secret is : ",GsonHelper.toJson(secrets));
+                logger.debug("filted secret is : {}",GsonHelper.toJson(secrets));
             }
             subject.setSecrets(secrets);
         }else {
