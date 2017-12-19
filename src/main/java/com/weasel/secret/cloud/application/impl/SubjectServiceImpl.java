@@ -146,8 +146,17 @@ public class SubjectServiceImpl implements SubjectService {
             }
             List<Secret> secrets =  subject.getSecrets()
                                            .stream()
-                                           .filter(secret -> secret.getId() == null || oldSecrets.contains(secret))
+                                           .filter(secret -> {
+                                               boolean include = (secret.getId() == null || oldSecrets.contains(secret));
+                                               if(logger.isDebugEnabled()){
+                                                   logger.debug("secret [{}] will be inclue...",secret.getId());
+                                               }
+                                               return include;
+                                           })
                                            .collect(Collectors.toList());
+            if(logger.isDebugEnabled()){
+                logger.debug("filted secret is : ",GsonHelper.toJson(secrets));
+            }
             subject.setSecrets(secrets);
         }else {
             subject.getSecrets()
