@@ -23,5 +23,5 @@ logging:
        eclipse: warn
        apache: warn
      com:
-       weasel: debug
+       weasel: info
   file: "logs/application.log"
