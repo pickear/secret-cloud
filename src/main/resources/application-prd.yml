@@ -11,7 +11,7 @@ spring:
 
 
 file:
-    path: /usr/local/applications/secret/apks
+    path: /usr/local/application/secret/apks
     url: https://secret.kisme.org/download
 
 logging:
