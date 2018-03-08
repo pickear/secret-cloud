@@ -139,27 +139,29 @@ public class SubjectServiceImpl implements SubjectService {
     private void ingnoreNotContainSecret(final Subject subject){
 
         if(null != subject.getId()){
-            List<Secret> oldSecrets = repository.findOne(subject.getId())
-                                                .getSecrets();
-            if(logger.isDebugEnabled()){
-                logger.debug("current data: {}",GsonHelper.toJson(oldSecrets));
+            Subject _subject = repository.findOne(subject.getId());
+            if(null != _subject){
+                List<Secret> oldSecrets = _subject.getSecrets();
+                if(logger.isDebugEnabled()){
+                    logger.debug("current data: {}",GsonHelper.toJson(oldSecrets));
+                }
+                List<Secret> secrets =  subject.getSecrets()
+                        .stream()
+                        .filter(secret -> {
+                            boolean include = (secret.getId() == null || oldSecrets.contains(secret));
+                            if(logger.isDebugEnabled()){
+                                if(include){
+                                    logger.debug("secret [{}] will be inclue...",secret.getId());
+                                }
+                            }
+                            return include;
+                        })
+                        .collect(Collectors.toList());
+                if(logger.isDebugEnabled()){
+                    logger.debug("filted secret is : {}",GsonHelper.toJson(secrets));
+                }
+                subject.setSecrets(secrets);
             }
-            List<Secret> secrets =  subject.getSecrets()
-                                           .stream()
-                                           .filter(secret -> {
-                                               boolean include = (secret.getId() == null || oldSecrets.contains(secret));
-                                               if(logger.isDebugEnabled()){
-                                                   if(include){
-                                                       logger.debug("secret [{}] will be inclue...",secret.getId());
-                                                   }
-                                               }
-                                               return include;
-                                           })
-                                           .collect(Collectors.toList());
-            if(logger.isDebugEnabled()){
-                logger.debug("filted secret is : {}",GsonHelper.toJson(secrets));
-            }
-            subject.setSecrets(secrets);
         }else {
             subject.getSecrets()
                     .forEach(secret -> secret.setId(null));

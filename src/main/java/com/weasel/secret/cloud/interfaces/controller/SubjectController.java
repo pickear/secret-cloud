@@ -132,6 +132,12 @@ public class SubjectController {
     @RequestMapping(value = "/delete",method = RequestMethod.DELETE)
     public @ResponseBody CommonResponse delete(@RequestParam("id") Long id){
 
+
+        Subject _subject = service.findOne(id);
+        if(null == _subject){
+            logger.warn("密码数据[{}]不存在!",id);
+            return CommonResponse.buildSuccess("删除成功");
+        }
         User user = ShiroHelper.getCurrentUser();
         List<Subject> subjects = service.findByUserId(user.getId());
         Subject s = subjects.stream()
