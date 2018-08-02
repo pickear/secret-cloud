@@ -137,7 +137,7 @@ public class SubjectServiceImpl implements SubjectService {
      * @return
      */
     private void ingnoreNotContainSecret(final Subject subject){
-
+		 Assert.notNull(subject,"subject参数不能为null");
         if(null != subject.getId()){
             Subject _subject = repository.findOne(subject.getId());
             if(null != _subject){
@@ -184,8 +184,11 @@ public class SubjectServiceImpl implements SubjectService {
                                                                .filter(_subject -> subject.getId() == _subject.getId())
                                                                .findFirst()
                                                                .orElse(null);
+								if(null == _suject){
+									subject.setId(null);
+								}							   
                                 //id 为null说明是需要新增的，_subject为null说明不存在，也是需要新增的。更新时间比数据库的时候晚的话，需要更新。
-                                return null == subject.getId() || null == _suject || _suject.getUpdateTime() < subject.getUpdateTime();
+                                return null == subject.getId()|| _suject.getUpdateTime() < subject.getUpdateTime();
                             })
                             .map(subject -> {
                                 Long currentTime = System.currentTimeMillis();
