@@ -15,7 +15,7 @@ public interface SubjectService {
      * @param id
      * @return
      */
-    int delete(long id);
+    int delete(long id,Long userId);
 
     /**
      *
@@ -23,39 +23,6 @@ public interface SubjectService {
      * @return
      */
     Subject save(Subject subject);
-
-    /**
-     *
-     * @param subjects
-     * @return
-     */
-    List<Subject> save(List<Subject> subjects);
-
-    /**
-     *
-     * @param userId
-     * @return
-     */
-    List<Subject> findByUserId(long userId);
-
-    /**
-     *
-     * @param userid
-     */
-    void deleteByUserId(long userid);
-
-    /**
-     *
-     * @param shouldDelete
-     */
-    void deleteAll(List<Subject> shouldDelete);
-
-    /**
-     * 同步数据，并返回最新的所有数据
-     * @param subjects
-     * @return
-     */
-    List<Subject> synchronize(User user, List<Subject> subjects);
 
     /**
      *
