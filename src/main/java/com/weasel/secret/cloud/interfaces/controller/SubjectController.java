@@ -36,11 +36,11 @@ public class SubjectController {
             notes = "<h5>1.</h5>需要在登录状态下调用.<br>"
     )
     @RequestMapping(value = "/list",method = RequestMethod.GET)
-    public @ResponseBody List<Subject> list(){
+    public CommonResponse<List<Subject>> list(){
         User user = ShiroHelper.getCurrentUser();
         long userid = user.getId();
-        List<Subject> subjects = repository.findByUserId(userid);
-        return subjects;
+        List<Subject> subjects = repository.findByUserIdAndDeletedIsFalse(userid);
+        return CommonResponse.buildSuccess("获取成功",subjects);
     }
 
 
@@ -59,14 +59,19 @@ public class SubjectController {
     )
     @ApiImplicitParam(name = "subject",value = "Subject对象",defaultValue = "NULL",required = true,dataTypeClass = Subject.class)
     @RequestMapping(value = "/save",method = RequestMethod.POST)
-    public @ResponseBody Subject save(@RequestBody Subject subject){
+    public CommonResponse<Subject> save(@RequestBody Subject subject){
         User user = ShiroHelper.getCurrentUser();
         logger.info("用户[{}]保存密码数据",user.getUsername());
         logger.debug(GsonHelper.toJson(subject));
         long userid = user.getId();
         subject.setUserId(userid);
-        subject = service.save(subject);
-        return service.findOne(subject.getId());
+        try{
+            subject = service.save(subject);
+            return CommonResponse.buildSuccess("保存成功",service.findOne(subject.getId()));
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return CommonResponse.buildFail(e.getMessage());
+        }
     }
 
     @ApiOperation(
@@ -81,7 +86,7 @@ public class SubjectController {
     )
     @ApiImplicitParam(name = "id",value = "Subject ID",defaultValue = "NULL",example = "1",required = true,dataTypeClass = Long.class)
     @RequestMapping(value = "/delete",method = RequestMethod.DELETE)
-    public @ResponseBody CommonResponse delete(@RequestParam("id") Long id){
+    public CommonResponse delete(@RequestParam("id") Long id){
 
         User user = ShiroHelper.getCurrentUser();
         logger.info("用户[{}]删除密码数据[{}]!",user.getUsername(),id);

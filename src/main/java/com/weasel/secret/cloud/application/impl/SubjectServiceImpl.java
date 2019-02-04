@@ -33,9 +33,6 @@ public class SubjectServiceImpl implements SubjectService {
     public int delete(long id,Long userId) {
         try {
             int subjectCount = repository.deleteByIdAndUserId(id,userId);
-            if(subjectCount > 0){
-                secretRepository.deleteBySubjectId(id);
-            }
             return subjectCount;
         }catch (Exception e){
             logger.error("delete subject [{}] is error",e);
@@ -57,12 +54,12 @@ public class SubjectServiceImpl implements SubjectService {
         Assert.isTrue(updateCount > 0,"更新失败，数据不是最新，请先更新!");
         Iterable<Secret> secrets = secretRepository.save(subject.getSecrets());
         subject.setSecrets(Lists.newArrayList(secrets));
-        return subject;
+        return findOne(subject.getId());
     }
 
     @Override
     public Subject findOne(Long id) {
-        return repository.findOne(id);
+        return repository.findOneByIdAndDeletedIsFalse(id);
     }
 
 }

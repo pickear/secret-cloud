@@ -3,9 +3,11 @@ package com.weasel.secret.cloud;
 import com.google.gson.reflect.TypeToken;
 import com.weasel.secret.cloud.application.SubjectService;
 import com.weasel.secret.cloud.infrastructure.helper.GsonHelper;
+import com.weasel.secret.cloud.infrastructure.persist.SubjectRepository;
 import com.weasel.secret.common.domain.Secret;
 import com.weasel.secret.common.domain.Subject;
 import org.assertj.core.util.Lists;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,17 +17,20 @@ import java.util.stream.Collectors;
 /**
  * Created by Dylan on 2017/11/12.
  */
-public class SubjectTests{
+public class SubjectTests extends SecretCloudApplicationTests{
 
     @Autowired
     private SubjectService service;
+    @Autowired
+    private SubjectRepository repository;
 
     @Test
-    public void save(){
+    public void add(){
 
         Subject subject = new Subject();
         subject.setTitle("平安银行");
         subject.setUrl("www.pinan.com");
+        subject.setUserId(0l);
         List<Secret> secrets = Lists.newArrayList();
         Secret s1 = new Secret();
         s1.setName("登录密码");
@@ -38,6 +43,35 @@ public class SubjectTests{
         subject.setSecrets(secrets);
         service.save(subject);
 
+    }
+
+    @Test
+    public void upodate(){
+        List<Subject> subjects = Lists.newArrayList(repository.findAll());
+        if(null != subjects && !subjects.isEmpty()){
+            Subject subject = subjects.get(0);
+            Subject subject2 = service.save(subject);
+            Assert.assertTrue(subject.getVersion()+1 == subject2.getVersion() );
+        }
+    }
+
+    @Test
+    public void delete(){
+        List<Subject> subjects = Lists.newArrayList(repository.findAllByDeletedIsFalse());
+        if(null != subjects && !subjects.isEmpty()){
+            int count = service.delete(subjects.get(0).getId(),subjects.get(0).getUserId());
+            Assert.assertTrue(count > 0 );
+        }
+    }
+
+    @Test
+    public void list(){
+        List<Subject> subjects = Lists.newArrayList(repository.findAllByDeletedIsFalse());
+        if(null != subjects && !subjects.isEmpty()){
+            for(Subject s : subjects){
+                Assert.assertTrue(!s.isDeleted());
+            }
+        }
     }
 
     @Test
